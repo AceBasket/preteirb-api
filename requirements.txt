@@ -3,3 +3,5 @@ django-rest-framework
 drf-spectacular[sidecar]
 kolo
 whitenoise
+psycopg2-binary
+python-dotenv
