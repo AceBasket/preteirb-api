@@ -12,11 +12,11 @@ def main():
 
     # Only for Local Development - Load environment variables from the .env file
     if 'WEBSITE_HOSTNAME' not in os.environ:
-        print("Loading environment variables for .env file")
-        load_dotenv('./.env')
+        print("Loading environment variables for .env.config file")
+        load_dotenv('./.env.config')
 
     # When running on Azure App Service you should use the production settings.
-    settings_module = "backend.production" if 'WEBSITE_HOSTNAME' in os.environ else 'backend.settings'
+    settings_module = "preteirb-api.production" if 'WEBSITE_HOSTNAME' in os.environ else 'preteirb-api.settings'
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings_module)
 
     try:

@@ -5,3 +5,5 @@ kolo
 whitenoise
 psycopg2-binary
 python-dotenv
+django-storages[azure]
+Pillow

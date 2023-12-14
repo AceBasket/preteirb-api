@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.db.models import Q
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
+from rest_framework.decorators import action
 from .models import Profile
 from items.models import Item
 from usages.models import Usage
@@ -12,6 +15,18 @@ from items.serializers.common import ItemSerializer
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+    parser_classes = [MultiPartParser, FormParser]
+
+    @action(detail=True, methods=['post'])
+    def upload_profile_picture(self, request, pk=None):
+        user = self.get_object()
+        serializer = ProfileSerializer(user, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProfileAndItemsOwnedViewSet(viewsets.ReadOnlyModelViewSet):
