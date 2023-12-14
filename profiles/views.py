@@ -17,7 +17,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
     serializer_class = ProfileSerializer
     parser_classes = [MultiPartParser, FormParser]
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post', 'patch', 'put'])
     def upload_profile_picture(self, request, pk=None):
         user = self.get_object()
         serializer = ProfileSerializer(user, data=request.data, partial=True)
