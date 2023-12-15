@@ -8,7 +8,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def removed_previous_profile_pic(self, instance, validated_data):
-        pic = validated_data.pop('profile_pic')
+        pic = validated_data['profile_pic']
         if pic and instance.profile_pic:
             instance.profile_pic.delete()
 

@@ -19,14 +19,22 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post', 'patch', 'put'])
     def upload_profile_picture(self, request, pk=None):
-        user = self.get_object()
-        serializer = ProfileSerializer(user, data=request.data, partial=True)
+        profile = self.get_object()
+        serializer = ProfileSerializer(
+            profile, data=request.data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, *args, **kwargs):
+        # destroy profile_pic first
+        profile = self.get_object()
+        if profile.profile_pic:
+            profile.profile_pic.delete()
+        return super().destroy(request, *args, **kwargs)
 
 
 class ProfileAndItemsOwnedViewSet(viewsets.ReadOnlyModelViewSet):
