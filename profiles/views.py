@@ -15,7 +15,6 @@ from items.serializers.common import ItemSerializer
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    parser_classes = [MultiPartParser, FormParser]
 
     @action(detail=True, methods=['post', 'patch', 'put'])
     def upload_profile_picture(self, request, pk=None):
