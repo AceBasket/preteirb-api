@@ -6,3 +6,12 @@ class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = '__all__'
+
+    def remove_previous_item_image(self, instance, validated_data):
+        image = validated_data['image']
+        if instance.image:
+            instance.image.delete()
+
+    def update(self, instance, validated_data):
+        self.remove_previous_item_image(instance, validated_data)
+        return super().update(instance, validated_data)
