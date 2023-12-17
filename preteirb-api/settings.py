@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # third-party libraries
     'whitenoise.runserver_nostatic',
     'rest_framework',
+    'rest_framework.authtoken',
     'drf_spectacular',
     'drf_spectacular_sidecar',
     'storages',
@@ -144,6 +145,9 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.JSONParser',
         'rest_framework.parsers.MultiPartParser',
     ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
 }
 
 SPECTACULAR_SETTINGS = {

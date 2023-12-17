@@ -5,10 +5,7 @@ from .models import Item
 
 
 router = routers.DefaultRouter()
-router.register(r'items', ItemViewSet)
-# router.register(r'items/(?P<id>\d+)/usages',
-#                 ItemAndUsagesRetrieveView, basename='item-usages')
-
+router.register(r'items', ItemViewSet, basename='items')
 urlpatterns = [
     path('', include(router.urls)),
     path('items/<int:pk>/usages/', ItemAndUsagesRetrieveView.as_view()),

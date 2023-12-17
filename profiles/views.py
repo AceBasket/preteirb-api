@@ -1,10 +1,5 @@
-from django.shortcuts import render
 from django.db.models import Q
-from rest_framework import viewsets, status
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.response import Response
-from rest_framework.decorators import action
-from .models import Profile
+from rest_framework import viewsets,
 from items.models import Item
 from usages.models import Usage
 from .serializers.common import ProfileSerializer
@@ -13,20 +8,10 @@ from items.serializers.common import ItemSerializer
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
-    queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
 
-    @action(detail=True, methods=['post', 'patch', 'put'])
-    def upload_profile_picture(self, request, pk=None):
-        profile = self.get_object()
-        serializer = ProfileSerializer(
-            profile, data=request.data, partial=True)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get_queryset(self):
+        return self.request.user.profiles.all()
 
     def destroy(self, request, *args, **kwargs):
         # destroy profile_pic first
@@ -50,5 +35,4 @@ class UsageAndItemWithOwnerViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         profile_id = self.kwargs['id']
-        # usage__user__id=profile_id and usage__item__owner__id!=profile_id
         return Usage.objects.filter(user__id=profile_id).filter(~Q(item__owner__id=profile_id))

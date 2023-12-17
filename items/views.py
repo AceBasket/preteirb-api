@@ -4,31 +4,17 @@ from rest_framework import generics
 from .serializers.common import ItemSerializer
 from .serializers.specialized import ItemAndUsagesSerializer
 from .models import Item
-from usages.models import Usage
-from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from rest_framework import filters
-from rest_framework.decorators import action
-from rest_framework import status
 
 
 class ItemViewSet(viewsets.ModelViewSet):
     search_fields = ['name', 'description']
     filter_backends = (filters.SearchFilter,)
-    queryset = Item.objects.all()
     serializer_class = ItemSerializer
 
-    # @action(detail=True, methods=['post', 'patch', 'put'])
-    # def upload_item_image(self, request, pk=None):
-    #     item = self.get_object()
-    #     serializer = ItemSerializer(
-    #         item, data=request.data, partial=True)
-
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data)
-
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get_queryset(self):
+        account = self.request.user
+        return Item.objects.filter(owner__account=account)
 
     def destroy(self, request, *args, **kwargs):
         item = self.get_object()
