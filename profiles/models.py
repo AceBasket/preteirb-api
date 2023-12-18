@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf.global_settings import AUTH_USER_MODEL
 
 
 class Profile(models.Model):

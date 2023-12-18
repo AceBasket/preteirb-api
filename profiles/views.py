@@ -1,14 +1,24 @@
 from django.db.models import Q
-from rest_framework import viewsets,
+from rest_framework import viewsets, permissions
 from items.models import Item
 from usages.models import Usage
 from .serializers.common import ProfileSerializer
 from usages.serializers.specialized import UsageAndItemWithOwnerSerializer
 from items.serializers.common import ItemSerializer
+from usages.views import IsCreatorOfUsage, IsOwnerOfItemAndCreatorOfProfile
+from items.views import IsOwnerOfItem, IsCreatorOfOwner
+
+
+class IsCreatorOfProfile(permissions.BasePermission):
+    message = 'You are not a member of the account that created this profile.'
+
+    def has_object_permission(self, request, view, obj):
+        return obj.account == request.user
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
     serializer_class = ProfileSerializer
+    permission_classes = [permissions.IsAuthenticated, IsCreatorOfProfile]
 
     def get_queryset(self):
         return self.request.user.profiles.all()
@@ -23,6 +33,8 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
 class ProfileAndItemsOwnedViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ItemSerializer
+    permission_classes = [permissions.IsAuthenticated,
+                          IsCreatorOfProfile, IsOwnerOfItem]
 
     def get_queryset(self):
         profile_id = self.kwargs['id']
@@ -30,9 +42,11 @@ class ProfileAndItemsOwnedViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class UsageAndItemWithOwnerViewSet(viewsets.ReadOnlyModelViewSet):
-    # doesn't retrieve the items owned by the profile
     serializer_class = UsageAndItemWithOwnerSerializer
+    permission_classes = [permissions.IsAuthenticated,
+                          IsOwnerOfItemAndCreatorOfProfile, IsCreatorOfUsage]
 
     def get_queryset(self):
+        # doesn't retrieve the items owned by the profile
         profile_id = self.kwargs['id']
         return Usage.objects.filter(user__id=profile_id).filter(~Q(item__owner__id=profile_id))
