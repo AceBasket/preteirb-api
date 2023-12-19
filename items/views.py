@@ -8,19 +8,22 @@ class IsOwnerOfItem(permissions.BasePermission):
     message = 'You are not a member of the account that owns this item.'
 
     def has_object_permission(self, request, view, obj):
-        return obj.owner == request.user
+        print(obj.owner.account, request.user)
+        return obj.owner.account == request.user
 
 
 class IsCreatorOfOwner(permissions.BasePermission):
     message = 'You are not a member of the account that created the item\'s owner\'s profile.'
 
     def has_permission(self, request, view):
-        profile_id = request.data['owner']
-        try:
-            profile = Profile.objects.get(id=profile_id)
-        except Profile.DoesNotExist:
-            return False
-        return profile.account == request.user
+        if request.method == 'POST':
+            profile_id = request.data['owner']
+            try:
+                profile = Profile.objects.get(id=profile_id)
+            except Profile.DoesNotExist:
+                return False
+            return profile.account == request.user
+        return True
 
 
 class ItemViewSet(viewsets.ModelViewSet):
@@ -44,7 +47,7 @@ class ItemViewSet(viewsets.ModelViewSet):
 class ItemAndUsagesRetrieveView(generics.RetrieveAPIView):
     serializer_class = ItemAndUsagesSerializer
     permission_classes = [permissions.IsAuthenticated,
-                          IsOwnerOfItem, IsCreatorOfOwner]
+                          IsOwnerOfItem]
 
     def get_queryset(self):
         item_id = self.kwargs['pk']

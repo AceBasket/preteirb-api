@@ -163,9 +163,7 @@ STORAGES = {
         "BACKEND": "storages.backends.azure_storage.AzureStorage",
         "OPTIONS": {
             "azure_container": os.environ.get('AZURE_CONTAINER'),
-            # "azure_container": "preteirb",
             "connection_string": os.environ.get('AZURE_STORAGE_CONNECTION_STRING'),
-            # "connection_string": "DefaultEndpointsProtocol=https;AccountName=csb1003200285c058de;AccountKey=fp/h9ODrSUA9FpU1b+cgDrHE1XIdHAMb/Wemi31U55NMgnriqd0L7MJExWbO478oZaZBpexzm0l4+AStya1Fzg==;EndpointSuffix=core.windows.net",
             "expiration_secs": 60*60,
         },
     },
@@ -175,5 +173,4 @@ STORAGES = {
 }
 
 
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# MEDIA_URL = '/media/'
+DATA_UPLOAD_MAX_MEMORY_SIZE = None
