@@ -8,8 +8,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         exclude = ['account']
 
     def remove_previous_profile_pic(self, instance, validated_data):
-        pic = validated_data['profile_pic']
-        if instance.profile_pic:
+        if 'profile_pic' in validated_data and instance.profile_pic:
             instance.profile_pic.delete()
 
     def update(self, instance, validated_data):
