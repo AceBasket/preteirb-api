@@ -8,8 +8,7 @@ class ItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def remove_previous_item_image(self, instance, validated_data):
-        image = validated_data['image']
-        if instance.image:
+        if 'image' in validated_data and instance.image:
             instance.image.delete()
 
     def update(self, instance, validated_data):
