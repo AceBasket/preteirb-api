@@ -8,7 +8,6 @@ class IsOwnerOfItem(permissions.BasePermission):
     message = 'You are not a member of the account that owns this item.'
 
     def has_object_permission(self, request, view, obj):
-        print(obj.owner.account, request.user)
         return obj.owner.account == request.user
 
 
